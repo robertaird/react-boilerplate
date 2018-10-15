@@ -6,4 +6,7 @@ const A = styled.a`
   ${buttonStyles};
 `;
 
+/**
+ * @component
+ */
 export default A;
