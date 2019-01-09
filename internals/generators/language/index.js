@@ -34,8 +34,24 @@ module.exports = {
     },
   ],
 
-  actions: () => {
+  actions: ({ test }) => {
     const actions = [];
+
+    if (test) {
+      // backup files that will be modified so we can restore them
+      actions.push({
+        type: 'backup',
+        path: '../../app',
+        file: 'i18n.js',
+      });
+
+      actions.push({
+        type: 'backup',
+        path: '../../app',
+        file: 'app.js',
+      });
+    }
+
     actions.push({
       type: 'modify',
       path: '../../app/i18n.js',
@@ -86,6 +102,17 @@ module.exports = {
       });
       return 'modify translation messages';
     });
+
+    if (!test) {
+      actions.push(() => {
+        const cmd = 'npm run extract-intl';
+        exec(cmd, (err, result) => {
+          if (err) throw err;
+          process.stdout.write(result);
+        });
+        return 'modify translation messages';
+      });
+    }
 
     return actions;
   },
