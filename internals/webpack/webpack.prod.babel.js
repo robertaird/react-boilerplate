@@ -4,14 +4,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const OfflinePlugin = require('offline-plugin');
 const { HashedModuleIdsPlugin } = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = require('./webpack.base.babel')({
   mode: 'production',
 
   // In production, we skip all hot-reloading stuff
-  entry: [path.join(process.cwd(), 'app/app.js')],
+  entry: [
+    require.resolve('react-app-polyfill/ie11'),
+    path.join(process.cwd(), 'app/app.js'),
+  ],
 
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
@@ -22,11 +25,12 @@ module.exports = require('./webpack.base.babel')({
   optimization: {
     minimize: true,
     minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
+      new TerserPlugin({
+        terserOptions: {
           warnings: false,
-          comparisons: false,
-          compress: {},
+          compress: {
+            comparisons: false,
+          },
           parse: {},
           mangle: true,
           output: {
