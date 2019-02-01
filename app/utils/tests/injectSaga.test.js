@@ -2,7 +2,7 @@
  * Test injectors
  */
 
-import { memoryHistory } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import { put } from 'redux-saga/effects';
 import renderer from 'react-test-renderer';
 import React from 'react';
@@ -14,6 +14,7 @@ import * as sagaInjectors from '../sagaInjectors';
 
 // Fixtures
 const Component = () => null;
+const memoryHistory = createMemoryHistory();
 
 function* testSaga() {
   yield put({ type: 'TEST', payload: 'yup' });
